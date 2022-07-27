@@ -23,7 +23,7 @@ public class Panier {
 	
 	public void addLigne(Article article, int qte) {
 		Ligne nouvelleLigne = new Ligne(article, qte);
-		lignesPanier.add(nouvelleLigne);
+		this.lignesPanier.add(nouvelleLigne);
 	}
 	
 	public void updateLigne(int index, int newQte) {

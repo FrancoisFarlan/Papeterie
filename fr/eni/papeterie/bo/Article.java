@@ -10,7 +10,6 @@ public abstract class Article {
 	private int qteStock;
 
 
-
 	public Integer getIdArticle() {
 		return idArticle;
 	}
@@ -53,8 +52,6 @@ public abstract class Article {
 		return "Article [idArticle="+ idArticle +", reference=" + reference + ", marque=" + marque + ", designation=" + designation
 				+ ", prixUnitaire=" + prixUnitaire + ", qteStock=" + qteStock + "]";
 	}
-	
-	
 	
 	
 }
