@@ -48,13 +48,20 @@ public class ArticleDAOJdbcImpl implements ArticleDAO {
 			}
 
 		} catch (SQLException ex) {
-			ex.printStackTrace();
+			throw new DALException(ex); 
 		} finally {
+			if(rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException ex) {
+					throw new DALException(ex);
+				}
+			}
 			if (stmt != null) {
 				try {
 					stmt.close();
 				} catch (SQLException ex) {
-					ex.printStackTrace();
+					throw new DALException(ex);
 				}
 			}
 
@@ -62,7 +69,7 @@ public class ArticleDAOJdbcImpl implements ArticleDAO {
 				try {
 					con.close();
 				} catch (SQLException ex) {
-					ex.printStackTrace();
+					throw new DALException(ex);
 				}
 			}
 
@@ -74,11 +81,12 @@ public class ArticleDAOJdbcImpl implements ArticleDAO {
 		List<Article> articles = new ArrayList<>();
 		Connection con = null;
 		Statement stmt = null;
+		ResultSet rs = null;
 
 		try {
 			con = JdbcTools.getConnection();
 			stmt = con.createStatement();
-			ResultSet rs = stmt
+			rs = stmt
 					.executeQuery("SELECT idArticle, reference, marque, designation, prixUnitaire, qteStock, grammage, "
 							+ "couleur, type FROM Articles");
 			Article a = null;
@@ -97,13 +105,20 @@ public class ArticleDAOJdbcImpl implements ArticleDAO {
 			}
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new DALException(e);
 		} finally {
+			if(rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException ex) {
+					throw new DALException(ex);
+				}
+			}
 			if (stmt != null) {
 				try {
 					stmt.close();
 				} catch (SQLException e) {
-					e.printStackTrace();
+					throw new DALException(e);
 				}
 			}
 
@@ -111,7 +126,7 @@ public class ArticleDAOJdbcImpl implements ArticleDAO {
 				try {
 					con.close();
 				} catch (SQLException e) {
-					e.printStackTrace();
+					throw new DALException(e);
 				}
 			}
 		}
@@ -119,7 +134,7 @@ public class ArticleDAOJdbcImpl implements ArticleDAO {
 
 	}
 
-	public void update(Article a) {
+	public void update(Article a) throws DALException{
 
 		Connection con = null;
 		String sql = "UPDATE Articles " + "SET reference = ?, " + "marque = ?, " + "designation = ?, "
@@ -155,13 +170,13 @@ public class ArticleDAOJdbcImpl implements ArticleDAO {
 			stmt.executeUpdate();
 
 		} catch (SQLException ex) {
-			ex.printStackTrace();
+			throw new DALException(ex);
 		} finally {
 			if (stmt != null) {
 				try {
 					stmt.close();
 				} catch (SQLException e) {
-					e.printStackTrace();
+					throw new DALException(e);
 				}
 			}
 
@@ -169,7 +184,7 @@ public class ArticleDAOJdbcImpl implements ArticleDAO {
 				try {
 					con.close();
 				} catch (SQLException e) {
-					e.printStackTrace();
+					throw new DALException(e);
 				}
 			}
 		}
@@ -181,6 +196,7 @@ public class ArticleDAOJdbcImpl implements ArticleDAO {
 		String sql = "INSERT INTO Articles(reference, marque, designation, prixUnitaire, qteStock, grammage, couleur, type) "
 				+ "VALUES(?, ?, ?, ?, ?, ?, ?, ?);";
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 
 		try {
 			con = JdbcTools.getConnection();
@@ -207,20 +223,27 @@ public class ArticleDAOJdbcImpl implements ArticleDAO {
 
 			int nbLignes = stmt.executeUpdate();
 			if (nbLignes == 1) {
-				ResultSet rs = stmt.getGeneratedKeys();
+				rs = stmt.getGeneratedKeys();
 				if (rs.next()) {
 					a.setIdArticle(rs.getInt(1));
 				}
 			}
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new DALException(e);
 		} finally {
+			if(rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException ex) {
+					throw new DALException(ex);
+				}
+			}
 			if (stmt != null) {
 				try {
 					stmt.close();
 				} catch (SQLException e) {
-					e.printStackTrace();
+					throw new DALException(e);
 				}
 			}
 
@@ -228,14 +251,14 @@ public class ArticleDAOJdbcImpl implements ArticleDAO {
 				try {
 					con.close();
 				} catch (SQLException e) {
-					e.printStackTrace();
+					throw new DALException(e);
 				}
 			}
 		}
 
 	}
 
-	public void delete(int index) {
+	public void delete(int index) throws DALException{
 
 		Connection con = null;
 		String sql = "DELETE FROM Articles WHERE idArticle = ?";
@@ -243,19 +266,19 @@ public class ArticleDAOJdbcImpl implements ArticleDAO {
 				
 		try {
 			con = JdbcTools.getConnection();
-			stmt = con.prepareStatement(sql);;
+			stmt = con.prepareStatement(sql);
 			
 			stmt.setInt(1, index);
 			stmt.executeUpdate();
 			
 		} catch (SQLException ex) {
-			ex.printStackTrace();
+			throw new DALException(ex);
 		}  finally {
 			if (stmt != null) {
 				try {
 					stmt.close();
 				} catch (SQLException e) {
-					e.printStackTrace();
+					throw new DALException(e);
 				}
 			}
 
@@ -263,7 +286,7 @@ public class ArticleDAOJdbcImpl implements ArticleDAO {
 				try {
 					con.close();
 				} catch (SQLException e) {
-					e.printStackTrace();
+					throw new DALException(e);
 				}
 			}
 		}
@@ -277,13 +300,14 @@ public class ArticleDAOJdbcImpl implements ArticleDAO {
 		String sql = "SELECT idArticle, reference, marque, designation, prixUnitaire, qteStock, grammage, couleur, type FROM Articles "
 				+ "WHERE marque = ?";
 		PreparedStatement stmt = null;
-		List<Article> liste = new ArrayList<>();		
+		List<Article> liste = new ArrayList<>();	
+		ResultSet rs = null;
 
 		try {
 			con = JdbcTools.getConnection();
 			stmt = con.prepareStatement(sql);
 			stmt.setString(1, marque);
-			ResultSet rs = stmt.executeQuery();
+			rs = stmt.executeQuery();
 			
 			Article a = null;
 			
@@ -304,13 +328,20 @@ public class ArticleDAOJdbcImpl implements ArticleDAO {
 			
 			
 		} catch (SQLException ex) {
-			ex.printStackTrace();
+			throw new DALException(ex);
 		} finally {
+			if(rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException ex) {
+					throw new DALException(ex);
+				}
+			}
 			if (stmt != null) {
 				try {
 					stmt.close();
 				} catch (SQLException ex) {
-					ex.printStackTrace();
+					throw new DALException(ex);
 				}
 			}
 
@@ -318,7 +349,7 @@ public class ArticleDAOJdbcImpl implements ArticleDAO {
 				try {
 					con.close();
 				} catch (SQLException ex) {
-					ex.printStackTrace();
+					throw new DALException(ex);
 				}
 			}
 
