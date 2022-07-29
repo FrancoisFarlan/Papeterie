@@ -13,10 +13,10 @@ import java.util.List;
 import fr.eni.papeterie.bo.Article;
 import fr.eni.papeterie.bo.Ramette;
 import fr.eni.papeterie.bo.Stylo;
-import fr.eni.papeterie.dal.ArticleDAO;
 import fr.eni.papeterie.dal.DALException;
+import fr.eni.papeterie.dal.DAO;
 
-public class ArticleDAOJdbcImpl implements ArticleDAO {
+public class ArticleDAOJdbcImpl implements DAO<Article> {
 
 	public Article selectById(int idArticle) throws DALException {
 
@@ -48,30 +48,11 @@ public class ArticleDAOJdbcImpl implements ArticleDAO {
 			}
 
 		} catch (SQLException ex) {
-			throw new DALException(ex); 
+			throw new DALException("erreur dans le selectById", ex); 
 		} finally {
-			if(rs != null) {
-				try {
-					rs.close();
-				} catch (SQLException ex) {
-					throw new DALException(ex);
-				}
-			}
-			if (stmt != null) {
-				try {
-					stmt.close();
-				} catch (SQLException ex) {
-					throw new DALException(ex);
-				}
-			}
-
-			if (con != null) {
-				try {
-					con.close();
-				} catch (SQLException ex) {
-					throw new DALException(ex);
-				}
-			}
+			JdbcTools.close(rs);
+			JdbcTools.close(stmt);
+			JdbcTools.close(con);
 
 		}
 		return a;
@@ -105,30 +86,11 @@ public class ArticleDAOJdbcImpl implements ArticleDAO {
 			}
 
 		} catch (SQLException e) {
-			throw new DALException(e);
+			throw new DALException("erreur selectAll", e);
 		} finally {
-			if(rs != null) {
-				try {
-					rs.close();
-				} catch (SQLException ex) {
-					throw new DALException(ex);
-				}
-			}
-			if (stmt != null) {
-				try {
-					stmt.close();
-				} catch (SQLException e) {
-					throw new DALException(e);
-				}
-			}
-
-			if (con != null) {
-				try {
-					con.close();
-				} catch (SQLException e) {
-					throw new DALException(e);
-				}
-			}
+			JdbcTools.close(rs);
+			JdbcTools.close(stmt);
+			JdbcTools.close(con);
 		}
 		return articles;
 
@@ -170,23 +132,10 @@ public class ArticleDAOJdbcImpl implements ArticleDAO {
 			stmt.executeUpdate();
 
 		} catch (SQLException ex) {
-			throw new DALException(ex);
+			throw new DALException("erreur update impossible", ex);
 		} finally {
-			if (stmt != null) {
-				try {
-					stmt.close();
-				} catch (SQLException e) {
-					throw new DALException(e);
-				}
-			}
-
-			if (con != null) {
-				try {
-					con.close();
-				} catch (SQLException e) {
-					throw new DALException(e);
-				}
-			}
+			JdbcTools.close(stmt);
+			JdbcTools.close(con);
 		}
 	}
 
@@ -230,30 +179,11 @@ public class ArticleDAOJdbcImpl implements ArticleDAO {
 			}
 
 		} catch (SQLException e) {
-			throw new DALException(e);
+			throw new DALException("insertion impossibl", e);
 		} finally {
-			if(rs != null) {
-				try {
-					rs.close();
-				} catch (SQLException ex) {
-					throw new DALException(ex);
-				}
-			}
-			if (stmt != null) {
-				try {
-					stmt.close();
-				} catch (SQLException e) {
-					throw new DALException(e);
-				}
-			}
-
-			if (con != null) {
-				try {
-					con.close();
-				} catch (SQLException e) {
-					throw new DALException(e);
-				}
-			}
+			JdbcTools.close(rs);
+			JdbcTools.close(stmt);
+			JdbcTools.close(con);
 		}
 
 	}
@@ -272,23 +202,10 @@ public class ArticleDAOJdbcImpl implements ArticleDAO {
 			stmt.executeUpdate();
 			
 		} catch (SQLException ex) {
-			throw new DALException(ex);
+			throw new DALException("delete impossible", ex);
 		}  finally {
-			if (stmt != null) {
-				try {
-					stmt.close();
-				} catch (SQLException e) {
-					throw new DALException(e);
-				}
-			}
-
-			if (con != null) {
-				try {
-					con.close();
-				} catch (SQLException e) {
-					throw new DALException(e);
-				}
-			}
+			JdbcTools.close(stmt);
+			JdbcTools.close(con);
 		}
 		
 	}
@@ -328,30 +245,11 @@ public class ArticleDAOJdbcImpl implements ArticleDAO {
 			
 			
 		} catch (SQLException ex) {
-			throw new DALException(ex);
+			throw new DALException("erreur selectByMarque", ex);
 		} finally {
-			if(rs != null) {
-				try {
-					rs.close();
-				} catch (SQLException ex) {
-					throw new DALException(ex);
-				}
-			}
-			if (stmt != null) {
-				try {
-					stmt.close();
-				} catch (SQLException ex) {
-					throw new DALException(ex);
-				}
-			}
-
-			if (con != null) {
-				try {
-					con.close();
-				} catch (SQLException ex) {
-					throw new DALException(ex);
-				}
-			}
+			JdbcTools.close(rs);
+			JdbcTools.close(stmt);
+			JdbcTools.close(con);
 
 		}
 		return liste;

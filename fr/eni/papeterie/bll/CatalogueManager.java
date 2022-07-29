@@ -6,13 +6,13 @@ import java.util.List;
 import fr.eni.papeterie.bo.Article;
 import fr.eni.papeterie.bo.Ramette;
 import fr.eni.papeterie.bo.Stylo;
-import fr.eni.papeterie.dal.ArticleDAO;
 import fr.eni.papeterie.dal.DALException;
+import fr.eni.papeterie.dal.DAO;
 import fr.eni.papeterie.dal.DAOFactory;
 
 public class CatalogueManager {
 
-	private ArticleDAO daoArticle;
+	private DAO<Article> daoArticle;
 	private static CatalogueManager instance = null; 
 
 	public CatalogueManager() throws BLLException {
@@ -28,9 +28,10 @@ public class CatalogueManager {
 	
 	public void addArticle(Article a) throws BLLException {
 		
-		this.validerArticle(a);
+		
 		
 		try {
+			this.validerArticle(a);
 			this.daoArticle.insert(a);
 		} catch (DALException ex) {
 			throw new BLLException(ex);
@@ -41,9 +42,10 @@ public class CatalogueManager {
 	public void updateArticle(Article a) throws BLLException {
 		
 		
-		this.validerArticle(a);
+		
 		
 		try {
+			this.validerArticle(a);
 			this.daoArticle.update(a);
 		} catch (DALException ex) {
 			throw new BLLException(ex);
@@ -67,19 +69,24 @@ public class CatalogueManager {
 		try {
 			liste = this.daoArticle.selectAll();
 		} catch (DALException ex) {
-			throw new BLLException(ex);
+			throw new BLLException("Erreur lors de la récupération du catalogue", ex);
 		}
 		return liste;
 	}
 	
 	public void validerArticle(Article a) throws BLLException {
+		
+		if(a == null) {
+			throw new BLLException("Article null");
+		}
+		
 		//Cas ramette
 		if(a instanceof Ramette) {
 			//Vérifier les attributs de ramette
 			Ramette ra = (Ramette) a;
-			if(ra.getDesignation().isEmpty() || ra.getDesignation().isBlank()
-					|| ra.getMarque().isEmpty() || ra.getMarque().isBlank()
-					|| ra.getReference().isEmpty() || ra.getReference().isBlank()
+			if(ra.getDesignation() == null || ra.getDesignation().isBlank()
+					|| ra.getMarque() == null || ra.getMarque().isBlank()
+					|| ra.getReference()==null || ra.getReference().isBlank()
 					|| ra.getGrammage() == 0
 					|| ra.getPrixUnitaire() == 0
 					|| ra.getQteStock() == 0) {
@@ -102,10 +109,10 @@ public class CatalogueManager {
 		//Vérifier les attributs de stylo
 		if(a instanceof Stylo) {
 			Stylo st = (Stylo) a;
-			if(st.getDesignation().isEmpty() || st.getDesignation().isBlank()
-					|| st.getMarque().isEmpty() || st.getMarque().isBlank()
-					|| st.getReference().isEmpty() || st.getReference().isBlank()
-					|| st.getCouleur().isEmpty() || st.getCouleur().isBlank()
+			if(st.getDesignation()==null || st.getDesignation().isBlank()
+					|| st.getMarque()==null || st.getMarque().isBlank()
+					|| st.getReference()==null || st.getReference().isBlank()
+					|| st.getCouleur()==null || st.getCouleur().isBlank()
 					|| st.getPrixUnitaire() == 0
 					|| st.getQteStock() == 0) {
 				throw new BLLException("Chaque attribut doit être correctement renseigné "
