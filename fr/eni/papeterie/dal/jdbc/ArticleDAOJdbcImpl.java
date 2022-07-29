@@ -255,5 +255,110 @@ public class ArticleDAOJdbcImpl implements DAO<Article> {
 		return liste;
 		
 	}
+	
+	@Override
+	public List<Article> selectByMotCle(String motCle) throws DALException {
+		Connection con = null;
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		String sql = "SELECT reference, marque, designation, prixUnitaire, qteStock, grammage, couleur, type " + 
+				" FROM articles WHERE marque like ? or designation like ?";
+		List<Article> liste = new ArrayList<Article>();
+		try {
+			con = JdbcTools.getConnection();
+			stmt = con.prepareStatement(sql);
+			stmt.setString(1, motCle);
+			rs = stmt.executeQuery();
+			Article art = null;
+
+			while (rs.next()) {
+				if (rs.getString("type").trim().equalsIgnoreCase("Stylo")){
+
+					art = new Stylo(rs.getInt("idArticle"),
+							rs.getString("marque"),
+							rs.getString("reference").trim(),
+							rs.getString("designation"),
+							rs.getFloat("prixUnitaire"),
+							rs.getInt("qteStock"),
+							rs.getString("couleur"));
+				}
+				if (rs.getString("type").trim().equalsIgnoreCase("Ramette")){
+					art = new Ramette(rs.getInt("idArticle"),
+							rs.getString("marque"),
+							rs.getString("reference").trim(),
+							rs.getString("designation"),
+							rs.getFloat("prixUnitaire"),
+							rs.getInt("qteStock"),
+							rs.getInt("grammage"));
+				}
+				liste.add(art);
+			}
+		} catch (SQLException e) {
+			throw new DALException("selectByMotCle failed - " , e);
+		} finally {
+			JdbcTools.close(rs);
+			JdbcTools.close(stmt);
+			JdbcTools.close(con);
+		}
+		return liste;
+	}
+
+	@Override
+	public boolean isInStock(Article a) throws DALException {
+		boolean isInStock = false;
+		Connection con = null;
+		String sql = "SELECT 1 FROM Articles "
+				+ "WHERE reference = ?";
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		
+		try {
+			con = JdbcTools.getConnection();
+			stmt = con.prepareStatement(sql);
+			stmt.setString(1, a.getReference());
+			rs = stmt.executeQuery();
+			
+			isInStock = rs.next();
+			
+		} catch (SQLException ex) {
+			throw new DALException("erreur dans la fonction isInStock", ex);
+		} finally {
+			JdbcTools.close(rs);
+			JdbcTools.close(stmt);
+			JdbcTools.close(con);
+		}
+		
+		
+		return isInStock;
+	}
+
+	@Override
+	public void updateQteStock(Article a) throws DALException {
+		
+		Connection con = null;
+		
+		String sql = "UPDATE Articles "
+				+ "SET qteStock = qteStock + ? "
+				+ "WHERE reference = ?";
+		PreparedStatement stmt = null;
+		
+		
+		try {
+			con = JdbcTools.getConnection();
+			stmt = con.prepareStatement(sql);
+			
+			stmt.setInt(1, a.getQteStock());
+			stmt.setString(2, a.getReference());
+			stmt.executeUpdate();
+			
+		} catch (SQLException ex) {
+			throw new DALException("erreur dans la fonction updateQteStock", ex);
+		} finally {
+			JdbcTools.close(stmt);
+			JdbcTools.close(con);
+		}
+		
+		
+	}
 
 }

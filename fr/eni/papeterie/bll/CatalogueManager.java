@@ -28,14 +28,26 @@ public class CatalogueManager {
 	
 	public void addArticle(Article a) throws BLLException {
 		
-		
-		
 		try {
-			this.validerArticle(a);
-			this.daoArticle.insert(a);
-		} catch (DALException ex) {
-			throw new BLLException(ex);
+			if(!this.daoArticle.isInStock(a)) {
+				try {
+					this.validerArticle(a);
+					this.daoArticle.insert(a);
+				} catch (DALException ex) {
+					throw new BLLException(ex);
+				}
+			} else {
+				System.out.println("Article déjà en stock. Ajout de la quantité indiquée");
+				try {
+				this.daoArticle.updateQteStock(a);
+				} catch (DALException ex2) {
+					throw new BLLException("problème au niveau de updateQteStock");
+				}
+			}
+		} catch (DALException ex1) {
+			throw new BLLException("Impossible de voir si l'article est déjà en stock");
 		}
+		
 		
 	}
 	
@@ -75,6 +87,7 @@ public class CatalogueManager {
 	}
 	
 	public void validerArticle(Article a) throws BLLException {
+		//Vérifier si l'article est déjà en stock
 		
 		if(a == null) {
 			throw new BLLException("Article null");
