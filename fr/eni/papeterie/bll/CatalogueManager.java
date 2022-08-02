@@ -6,13 +6,13 @@ import java.util.List;
 import fr.eni.papeterie.bo.Article;
 import fr.eni.papeterie.bo.Ramette;
 import fr.eni.papeterie.bo.Stylo;
+import fr.eni.papeterie.dal.ArticleDAO;
 import fr.eni.papeterie.dal.DALException;
-import fr.eni.papeterie.dal.DAO;
 import fr.eni.papeterie.dal.DAOFactory;
 
 public class CatalogueManager {
 
-	private DAO<Article> daoArticle;
+	private ArticleDAO daoArticle;
 	private static CatalogueManager instance = null; 
 
 	public CatalogueManager() throws BLLException {

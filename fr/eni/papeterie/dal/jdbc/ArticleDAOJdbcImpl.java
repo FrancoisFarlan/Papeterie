@@ -13,10 +13,10 @@ import java.util.List;
 import fr.eni.papeterie.bo.Article;
 import fr.eni.papeterie.bo.Ramette;
 import fr.eni.papeterie.bo.Stylo;
+import fr.eni.papeterie.dal.ArticleDAO;
 import fr.eni.papeterie.dal.DALException;
-import fr.eni.papeterie.dal.DAO;
 
-public class ArticleDAOJdbcImpl implements DAO<Article> {
+public class ArticleDAOJdbcImpl implements ArticleDAO {
 
 	public Article selectById(int idArticle) throws DALException {
 

@@ -1,12 +1,16 @@
 package fr.eni.papeterie.dal;
 
-import fr.eni.papeterie.bo.Article;
 import fr.eni.papeterie.dal.jdbc.ArticleDAOJdbcImpl;
+import fr.eni.papeterie.dal.jdbc.PersonnesDAOJdbcImpl;
 
 public class DAOFactory {
 
-	public static DAO<Article> getArticleDAO() {
+	public static ArticleDAO getArticleDAO() {
 		return new ArticleDAOJdbcImpl();
+	}
+	
+	public static PersonneDAO getPersonneDAO() {
+		return new PersonnesDAOJdbcImpl();
 	}
 	
 	
